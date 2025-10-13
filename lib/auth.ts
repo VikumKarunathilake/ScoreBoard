@@ -1,5 +1,14 @@
 // lib/auth.ts
 import GoogleProvider from 'next-auth/providers/google';
+import { Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+
+interface ExtendedUser {
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
 
 export const authOptions = {
   providers: [
@@ -9,8 +18,10 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, token }: any) {
-      session.user.id = token.sub;
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (session.user) {
+        (session.user as ExtendedUser).id = token.sub;
+      }
       return session;
     },
   },
