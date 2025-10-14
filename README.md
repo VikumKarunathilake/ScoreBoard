@@ -25,6 +25,16 @@ A **real-time scoreboard** for school sports meet events, built with **Next.js**
 
 ---
 
+## 🏗️ Project Architecture
+
+The project follows a standard Next.js `app` directory structure:
+
+- **Frontend:** Built with React, TypeScript, and Tailwind CSS, the frontend is located in the `app` and `components` directories. It consumes data from the backend via API routes.
+- **Backend:** The backend is implemented using Next.js API Routes (`app/api`). It handles authentication, score updates, and broadcasts real-time updates using Server-Sent Events (SSE).
+- **Data Storage:** Scores are stored in a local JSON file (`data/scores.json`). This is simple for development but has limitations for production deployment.
+
+---
+
 ## 🚀 Getting Started
 
 1. **Clone the repository**:
@@ -34,7 +44,6 @@ A **real-time scoreboard** for school sports meet events, built with **Next.js**
    ```
 
 2. **Install dependencies**:
-
    ```bash
    pnpm install
    # or
@@ -43,21 +52,18 @@ A **real-time scoreboard** for school sports meet events, built with **Next.js**
 
 3. **Set up environment variables**:
    Create a `.env.local` file in the project root:
-
    ```env
    GOOGLE_CLIENT_ID=your_google_client_id
    GOOGLE_CLIENT_SECRET=your_google_client_secret
-   ADMIN_EMAILS=your_email@example.com, another_email@example.com
+   ADMIN_EMAILS=your_email@example.com,another_email@example.com
    ```
 
 4. **Run the development server**:
-
    ```bash
    pnpm dev
    # or
    npm run dev
    ```
-
    Open [http://localhost:3000](http://localhost:3000) to see your scoreboard.
 
 ---
@@ -65,25 +71,42 @@ A **real-time scoreboard** for school sports meet events, built with **Next.js**
 ## 🔑 Admin Access
 
 To access admin controls:
-
 1. Sign in with a **Google account** listed in `ADMIN_EMAILS`.
-2. Admin controls appear on the homepage:
+2. Admin controls appear on the homepage, allowing you to:
+   - Add points to houses
+   - Reset all scores
+   - Monitor live event updates
 
-   * Add points to houses
-   * Reset all scores
-   * Monitor live event updates
+---
 
+## 🌊 Data Flow & Real-time Updates
+
+The application uses **Server-Sent Events (SSE)** to deliver real-time updates to all connected clients.
+
+1. **Client Connection:** The frontend establishes a connection to the `/api/events` endpoint.
+2. **Initial Data:** The server sends the current scores to the client upon connection.
+3. **Score Updates:** When an admin updates the scores, the backend:
+   - Writes the new scores to `scores.json`.
+   - Broadcasts the updated scores to all connected clients through the SSE connection.
+4. **Real-time UI:** The frontend listens for these events and updates the UI in real-time without needing to poll the server.
+
+---
 
 ## ⚠️ Important Deployment Note
 
 > **This project cannot be deployed as-is in a pure serverless environment if using local file storage (`scores.json`).**
 
-* The current implementation writes scores to a local file (`/data/scores.json`).
-* Serverless platforms like **Vercel Serverless Functions** or **Fastly Compute@Edge** **do not allow persistent filesystem writes**, so scores will be lost on each invocation.
+- The current implementation writes scores to a local file (`/data/scores.json`).
+- Serverless platforms like **Vercel Serverless Functions** or **Fastly Compute@Edge** **do not allow persistent filesystem writes**, so scores will be lost on each invocation.
 
+### Recommended Deployment Options
+
+- **Long-Running Server:** Deploy the application on a long-running server (e.g., a traditional Node.js server, Docker container) that has a persistent filesystem.
+
+---
 
 ## 📚 Learn More
 
-* [Next.js Documentation](https://nextjs.org/docs)
-* [Learn Next.js](https://nextjs.org/learn)
-* [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
