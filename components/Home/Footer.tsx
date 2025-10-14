@@ -25,7 +25,7 @@ export function Footer() {
                         <div className="flex justify-between space-x-4">
                             <Avatar>
                                 <AvatarImage src="https://avatars.githubusercontent.com/u/112757882" />
-                                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600">
+                                <AvatarFallback>
                                     VK
                                 </AvatarFallback>
                             </Avatar>

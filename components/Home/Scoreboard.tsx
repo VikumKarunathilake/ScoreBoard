@@ -70,22 +70,22 @@ function ScoreCard({ house, score, position }: ScoreCardProps) {
             case 0: return {
                 text: '🏆 1st Place',
                 bg: 'bg-gradient-to-br from-yellow-400 to-orange-500',
-                shadow: 'shadow-lg shadow-yellow-500/25'
+                shadow: 'shadow-lg'
             };
             case 1: return {
                 text: '🥈 2nd Place',
                 bg: 'bg-gradient-to-br from-gray-400 to-gray-500',
-                shadow: 'shadow-lg shadow-gray-500/25'
+                shadow: 'shadow-lg'
             };
             case 2: return {
                 text: '🥉 3rd Place',
                 bg: 'bg-gradient-to-br from-amber-600 to-amber-700',
-                shadow: 'shadow-lg shadow-amber-600/25'
+                shadow: 'shadow-lg'
             };
             default: return {
                 text: `${pos + 1}th Place`,
                 bg: 'bg-gradient-to-br from-slate-500 to-slate-600',
-                shadow: 'shadow-lg shadow-slate-500/25'
+                shadow: 'shadow-lg'
             };
         }
     };
@@ -93,10 +93,10 @@ function ScoreCard({ house, score, position }: ScoreCardProps) {
     const positionStyle = getPositionStyle(position);
 
     return (
-        <Card className={`border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-xl bg-gradient-to-r ${houseColors[house].gradient} ${positionStyle.shadow} bg-${houseColors[house].bg}`}>
+        <Card className={`border-0 transform transition-all duration-300 hover:scale-105 text-slate-900 hover:shadow-xl bg-gradient-to-r ${houseColors[house].gradient} ${positionStyle.shadow}`}>
             <CardContent className="p-6 text-center relative overflow-hidden">
                 <div className="absolute top-4 right-4">
-                    <div className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${positionStyle.bg}`}>
+                    <div className={`px-3 py-1 rounded-full text-xs font-semibold ${positionStyle.bg}`}>
                         {positionStyle.text}
                     </div>
                 </div>
@@ -108,8 +108,6 @@ function ScoreCard({ house, score, position }: ScoreCardProps) {
 
                 <div className="text-6xl font-bold mb-2 drop-shadow-lg">{score}</div>
                 <div className="text-sm opacity-80">Total Points</div>
-
-                <div className="absolute bottom-0 left-0 right-0 h-1  /30"></div>
             </CardContent>
         </Card>
     );

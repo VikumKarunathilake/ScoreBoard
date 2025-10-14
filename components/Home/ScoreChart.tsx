@@ -1,7 +1,7 @@
 // components/Home/ScoreChart.tsx
 import { Scores } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Pie, PieChart, Cell } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Pie, PieChart, Cell } from 'recharts';
 
 interface ScoreChartProps {
     scores: Scores;
@@ -35,9 +35,9 @@ export function ScoreChart({ scores }: ScoreChartProps) {
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="border border-slate-200 p-3 rounded-lg shadow-lg">
-                    <p className="font-semibold text-slate-800">{label}</p>
-                    <p className="text-slate-600">
+                <div className="border bg-background p-3 rounded-lg shadow-lg">
+                    <p className="font-semibold">{label}</p>
+                    <p>
                         Score: <span className="font-semibold">{payload[0].value}</span>
                     </p>
                 </div>
@@ -49,12 +49,12 @@ export function ScoreChart({ scores }: ScoreChartProps) {
     const CustomPieTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="  border border-slate-200 p-3 rounded-lg shadow-lg">
-                    <p className="font-semibold text-slate-800">{payload[0].payload.house}</p>
-                    <p className="text-slate-600">
+                <div className="border bg-background p-3 rounded-lg shadow-lg">
+                    <p className="font-semibold">{payload[0].payload.house}</p>
+                    <p>
                         Score: <span className="font-semibold">{payload[0].value}</span>
                     </p>
-                    <p className="text-slate-600">
+                    <p>
                         Percentage: <span className="font-semibold">
                             {((payload[0].value / totalScore) * 100).toFixed(1)}%
                         </span>
@@ -67,10 +67,10 @@ export function ScoreChart({ scores }: ScoreChartProps) {
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="border-0 shadow-lg  /80 backdrop-blur-sm">
+            <Card>
                 <CardHeader>
-                    <CardTitle className="text-slate-800">Score Comparison</CardTitle>
-                    <CardDescription className="text-slate-600">
+                    <CardTitle>Score Comparison</CardTitle>
+                    <CardDescription>
                         Visual representation of house scores
                     </CardDescription>
                 </CardHeader>
@@ -79,13 +79,11 @@ export function ScoreChart({ scores }: ScoreChartProps) {
                         <BarChart data={sortedData}>
                             <XAxis
                                 dataKey="shortName"
-                                stroke="#64748b"
                                 fontSize={12}
                                 tickLine={false}
                                 axisLine={false}
                             />
                             <YAxis
-                                stroke="#64748b"
                                 fontSize={12}
                                 tickLine={false}
                                 axisLine={false}
@@ -105,10 +103,10 @@ export function ScoreChart({ scores }: ScoreChartProps) {
                 </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg  /80 backdrop-blur-sm">
+            <Card>
                 <CardHeader>
-                    <CardTitle className="text-slate-800">Score Distribution</CardTitle>
-                    <CardDescription className="text-slate-600">
+                    <CardTitle>Score Distribution</CardTitle>
+                    <CardDescription>
                         Percentage breakdown of total points
                     </CardDescription>
                 </CardHeader>
@@ -138,19 +136,19 @@ export function ScoreChart({ scores }: ScoreChartProps) {
                 </CardContent>
             </Card>
 
-            <Card className="lg:col-span-2 border-0 shadow-lg  /80 backdrop-blur-sm">
+            <Card className="lg:col-span-2">
                 <CardHeader>
-                    <CardTitle className="text-slate-800">Current Standings</CardTitle>
-                    <CardDescription className="text-slate-600">
+                    <CardTitle>Current Standings</CardTitle>
+                    <CardDescription>
                         Detailed house rankings and statistics
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
                         {sortedData.map((house, index) => (
-                            <div key={house.house} className="flex items-center justify-between p-4 border border-slate-200 rounded-xl  /50 backdrop-blur-sm">
+                            <div key={house.house} className="flex items-center justify-between p-4 border rounded-lg">
                                 <div className="flex items-center space-x-4">
-                                    <div className="flex items-center justify-center w-10 h-10 rounded-full   border border-slate-200 shadow-sm">
+                                    <div className="flex items-center justify-center w-10 h-10 rounded-full border shadow-sm">
                                         <span className="text-2xl">
                                             {index === 0 ? '🥇' :
                                                 index === 1 ? '🥈' :
@@ -162,13 +160,13 @@ export function ScoreChart({ scores }: ScoreChartProps) {
                                             className="w-4 h-4 rounded-full shadow-sm"
                                             style={{ backgroundColor: house.color }}
                                         />
-                                        <span className="font-semibold text-slate-800 text-lg">{house.house}</span>
+                                        <span className="font-semibold text-lg">{house.house}</span>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-2xl font-bold text-slate-800">{house.score}</div>
+                                    <div className="text-2xl font-bold">{house.score}</div>
                                     {totalScore > 0 && (
-                                        <div className="text-sm text-slate-500">
+                                        <div className="text-sm text-muted-foreground">
                                             {((house.score / totalScore) * 100).toFixed(1)}% of total
                                         </div>
                                     )}

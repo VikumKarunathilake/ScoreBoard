@@ -68,18 +68,15 @@ export default function Home() {
                     case 'score-update':
                         setScores(data.data.scores);
                         const update = data.data.update;
-                        const updateMessage = `${update.house} +${update.points} - ${update.event}`;
+                        const updateMessage = `Score Updated`;
                         setLastUpdate(updateMessage);
-                        toast.success('Score Updated', {
-                            description: updateMessage,
-                        });
                         break;
 
                     case 'score-reset':
                         setScores(data.data.scores);
                         const resetMessage = `Scores reset by ${data.data.updatedBy}`;
                         setLastUpdate(resetMessage);
-                        toast.info('Scores Reset', {
+                        toast.error('Scores Reset', {
                             description: resetMessage,
                         });
                         break;
@@ -186,7 +183,7 @@ export default function Home() {
                     <Alert className="mb-6 bg-blue-500/10 border-blue-200 backdrop-blur-sm">
                         <AlertDescription className="text-blue-700 flex items-center gap-2">
                             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                            Last update: {lastUpdate}
+                            {lastUpdate}
                         </AlertDescription>
                     </Alert>
                 )}
@@ -197,7 +194,7 @@ export default function Home() {
                         onResetScores={resetScores}
                     />
                 )}
-                
+                <br />
                 <Scoreboard scores={scores} />
             </div>
 
