@@ -4,16 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from '@/components/ui/drawer';
-import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -26,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Plus, Settings, Trophy, RotateCcw } from 'lucide-react';
 
 const houseNames: Record<keyof Scores, string> = {
     red: 'Pius',
@@ -35,65 +26,31 @@ const houseNames: Record<keyof Scores, string> = {
 };
 
 interface AdminControlsProps {
-    showAdminControls: boolean;
-    onToggleControls: () => void;
     onAddPoints: (house: keyof Scores, points: number, event: string) => void;
     onResetScores: () => void;
 }
 
-export function AdminControls({
-    showAdminControls,
-    onToggleControls,
-    onAddPoints,
-    onResetScores,
-}: AdminControlsProps) {
+export function AdminControls({ onAddPoints, onResetScores }: AdminControlsProps) {
     return (
-        <Card className="mb-8">
-            <CardHeader>
-                <div className="flex justify-between items-center">
-                    <CardTitle>Admin Controls</CardTitle>
-                    <Drawer>
-                        <DrawerTrigger asChild>
-                            <Button variant="outline" size="sm">
-                                Open Admin Panel
-                            </Button>
-                        </DrawerTrigger>
-                        <DrawerContent>
-                            <div className="mx-auto w-full max-w-2xl">
-                                <DrawerHeader>
-                                    <DrawerTitle>Admin Controls</DrawerTitle>
-                                    <DrawerDescription>
-                                        Manage scores and house points
-                                    </DrawerDescription>
-                                </DrawerHeader>
-                                <div className="p-4 pb-0 space-y-6">
-                                    <QuickAddPoints onAddPoints={onAddPoints} />
-                                    <Separator />
-                                    <CustomPoints onAddPoints={onAddPoints} />
-                                    <Separator />
-                                    <ResetButton onResetScores={onResetScores} />
-                                </div>
-                                <DrawerFooter>
-                                    <DrawerClose asChild>
-                                        <Button variant="outline">Close</Button>
-                                    </DrawerClose>
-                                </DrawerFooter>
-                            </div>
-                        </DrawerContent>
-                    </Drawer>
+        <Card className="border-0 shadow-lg  /80 backdrop-blur-sm">
+            <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                            <Settings className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <CardTitle className="text-xl">Admin Controls</CardTitle>
+                            <p className="text-sm text-slate-600">Manage scores and points</p>
+                        </div>
+                    </div>
                 </div>
             </CardHeader>
-
-            {/* Legacy inline controls for backward compatibility */}
-            {showAdminControls && (
-                <CardContent className="space-y-4">
-                    <QuickAddPoints onAddPoints={onAddPoints} />
-                    <Separator />
-                    <CustomPoints onAddPoints={onAddPoints} />
-                    <Separator />
-                    <ResetButton onResetScores={onResetScores} />
-                </CardContent>
-            )}
+            <CardContent className="space-y-4">
+                <CustomPoints onAddPoints={onAddPoints} />
+                <Separator />
+                <ResetButton onResetScores={onResetScores} />
+            </CardContent>
         </Card>
     );
 }
@@ -102,40 +59,6 @@ interface QuickAddPointsProps {
     onAddPoints: (house: keyof Scores, points: number, event: string) => void;
 }
 
-function QuickAddPoints({ onAddPoints }: QuickAddPointsProps) {
-    const handleAddPoints = (house: keyof Scores, points: number, event: string) => {
-        onAddPoints(house, points, event);
-        toast.success('Points Added', {
-            description: `Added ${points} points to ${houseNames[house]}`,
-        });
-    };
-
-    return (
-        <div>
-            <h3 className="font-semibold mb-3 text-foreground">Quick Add Points</h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                {Object.keys(houseNames).map((house) => (
-                    <div key={house} className="text-center">
-                        <div className="font-semibold mb-2 capitalize text-sm text-foreground">{house}</div>
-                        <div className="flex gap-1 justify-center">
-                            {[1, 3, 5].map((points) => (
-                                <Button
-                                    key={points}
-                                    onClick={() => handleAddPoints(house as keyof Scores, points, `Event ${points}pts`)}
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-8 px-2 text-xs"
-                                >
-                                    +{points}
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
 
 interface CustomPointsProps {
     onAddPoints: (house: keyof Scores, points: number, event: string) => void;
@@ -144,8 +67,11 @@ interface CustomPointsProps {
 function CustomPoints({ onAddPoints }: CustomPointsProps) {
     return (
         <div>
-            <h3 className="font-semibold mb-2 text-foreground">Custom Points</h3>
-            <div className="flex gap-2 flex-wrap">
+            <h3 className="font-semibold mb-3 text-slate-800 flex items-center gap-2">
+                <Trophy className="w-4 h-4" />
+                Add Points
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.keys(houseNames).map((house) => (
                     <CustomPointsDialog
                         key={house}
@@ -189,21 +115,21 @@ function CustomPointsDialog({ house, onAddPoints }: CustomPointsDialogProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="default" size="sm" className="capitalize">
-                    Add to {house}
+                <Button variant="outline" className="capitalize border-slate-300 text-slate-700 hover:bg-slate-50">
+                    {houseNames[house]}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Add Points to {houseNames[house]}</DialogTitle>
                     <DialogDescription>
-                        Enter the points and event name for {houseNames[house]}.
+                        Enter custom points and event details for {houseNames[house]} house.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="points" className="text-right">
+                        <div className="space-y-2">
+                            <Label htmlFor="points" className="text-slate-700">
                                 Points
                             </Label>
                             <Input
@@ -212,27 +138,29 @@ function CustomPointsDialog({ house, onAddPoints }: CustomPointsDialogProps) {
                                 min="1"
                                 value={points}
                                 onChange={(e) => setPoints(e.target.value)}
-                                className="col-span-3"
                                 placeholder="Enter points"
+                                className="border-slate-300 focus:border-blue-500"
                                 required
                             />
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="event" className="text-right">
-                                Event
+                        <div className="space-y-2">
+                            <Label htmlFor="event" className="text-slate-700">
+                                Event Name
                             </Label>
                             <Input
                                 id="event"
                                 value={event}
                                 onChange={(e) => setEvent(e.target.value)}
-                                className="col-span-3"
                                 placeholder="Enter event name"
+                                className="border-slate-300 focus:border-blue-500"
                                 required
                             />
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button type="submit">Add Points</Button>
+                        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                            Add Points
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
@@ -255,23 +183,24 @@ function ResetButton({ onResetScores }: ResetButtonProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="destructive" className="w-full">
+                <Button variant="outline" className="w-full border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700">
+                    <RotateCcw className="w-4 h-4 mr-2" />
                     Reset All Scores
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Reset All Scores</DialogTitle>
-                    <DialogDescription>
-                        Are you sure you want to reset all scores to zero? This action cannot be undone.
+                    <DialogTitle className="text-red-600">Reset All Scores</DialogTitle>
+                    <DialogDescription className="text-slate-600">
+                        This will reset all house scores to zero. This action cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setOpen(false)}>
+                <DialogFooter className="gap-2 sm:gap-1">
+                    <Button variant="outline" onClick={() => setOpen(false)} className="border-slate-300">
                         Cancel
                     </Button>
                     <Button variant="destructive" onClick={handleReset}>
-                        Reset Scores
+                        Confirm Reset
                     </Button>
                 </DialogFooter>
             </DialogContent>

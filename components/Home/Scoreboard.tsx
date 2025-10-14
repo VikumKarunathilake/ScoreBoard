@@ -7,11 +7,27 @@ interface ScoreboardProps {
     scores: Scores;
 }
 
-const houseColors: Record<keyof Scores, string> = {
-    red: 'bg-red-500 border-red-700 text-primary-foreground',
-    blue: 'bg-blue-500 border-blue-700 text-primary-foreground',
-    green: 'bg-green-500 border-green-700 text-primary-foreground',
-    yellow: 'bg-yellow-500 border-yellow-700 text-primary-foreground',
+const houseColors: Record<keyof Scores, { bg: string; border: string; gradient: string }> = {
+    red: {
+        bg: 'bg-red-500',
+        border: 'border-red-600',
+        gradient: 'from-red-500 to-red-600'
+    },
+    blue: {
+        bg: 'bg-blue-500',
+        border: 'border-blue-600',
+        gradient: 'from-blue-500 to-blue-600'
+    },
+    green: {
+        bg: 'bg-green-500',
+        border: 'border-green-600',
+        gradient: 'from-green-500 to-green-600'
+    },
+    yellow: {
+        bg: 'bg-yellow-500',
+        border: 'border-yellow-600',
+        gradient: 'from-yellow-500 to-yellow-600'
+    },
 };
 
 const houseNames: Record<keyof Scores, string> = {
@@ -26,7 +42,7 @@ export function Scoreboard({ scores }: ScoreboardProps) {
 
     return (
         <div className="space-y-8 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {sortedHouses.map(([house, score], index) => (
                     <ScoreCard
                         key={house}
@@ -49,25 +65,51 @@ interface ScoreCardProps {
 }
 
 function ScoreCard({ house, score, position }: ScoreCardProps) {
-    const getPositionText = (pos: number) => {
+    const getPositionStyle = (pos: number) => {
         switch (pos) {
-            case 0: return '🏆 1st';
-            case 1: return '🥈 2nd';
-            case 2: return '🥉 3rd';
-            default: return `${pos + 1}th`;
+            case 0: return {
+                text: '🏆 1st Place',
+                bg: 'bg-gradient-to-br from-yellow-400 to-orange-500',
+                shadow: 'shadow-lg shadow-yellow-500/25'
+            };
+            case 1: return {
+                text: '🥈 2nd Place',
+                bg: 'bg-gradient-to-br from-gray-400 to-gray-500',
+                shadow: 'shadow-lg shadow-gray-500/25'
+            };
+            case 2: return {
+                text: '🥉 3rd Place',
+                bg: 'bg-gradient-to-br from-amber-600 to-amber-700',
+                shadow: 'shadow-lg shadow-amber-600/25'
+            };
+            default: return {
+                text: `${pos + 1}th Place`,
+                bg: 'bg-gradient-to-br from-slate-500 to-slate-600',
+                shadow: 'shadow-lg shadow-slate-500/25'
+            };
         }
     };
 
+    const positionStyle = getPositionStyle(position);
+
     return (
-        <Card className={`${houseColors[house]} border-2 transform transition-transform hover:scale-105`}>
-            <CardContent className="p-6 text-center">
-                <div className="text-xl font-bold mb-2">
-                    {houseNames[house]}
+        <Card className={`border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-xl bg-gradient-to-r ${houseColors[house].gradient} ${positionStyle.shadow} bg-${houseColors[house].bg}`}>
+            <CardContent className="p-6 text-center relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                    <div className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${positionStyle.bg}`}>
+                        {positionStyle.text}
+                    </div>
                 </div>
-                <div className="text-5xl font-bold mb-4">{score}</div>
-                <div className="text-lg font-medium">
-                    {getPositionText(position)}
+
+                <div className="mb-4">
+                    <div className="text-lg font-semibold opacity-90 mb-1">House</div>
+                    <div className="text-2xl font-bold">{houseNames[house]}</div>
                 </div>
+
+                <div className="text-6xl font-bold mb-2 drop-shadow-lg">{score}</div>
+                <div className="text-sm opacity-80">Total Points</div>
+
+                <div className="absolute bottom-0 left-0 right-0 h-1  /30"></div>
             </CardContent>
         </Card>
     );

@@ -68,7 +68,7 @@ export default function Home() {
                     case 'score-update':
                         setScores(data.data.scores);
                         const update = data.data.update;
-                        const updateMessage = `${update.house} +${update.points} - ${update.event} (by ${update.updatedBy})`;
+                        const updateMessage = `${update.house} +${update.points} - ${update.event}`;
                         setLastUpdate(updateMessage);
                         toast.success('Score Updated', {
                             description: updateMessage,
@@ -132,10 +132,6 @@ export default function Home() {
             if (!response.ok) {
                 throw new Error('Failed to add points');
             }
-
-            toast.success('Points Added', {
-                description: `Added ${points} points to ${house} for ${event}`,
-            });
         } catch (error) {
             console.error('Error adding points:', error);
             toast.error('Error', {
@@ -164,10 +160,6 @@ export default function Home() {
             if (!response.ok) {
                 throw new Error('Failed to reset scores');
             }
-
-            toast.success('Scores Reset', {
-                description: 'All scores have been reset to zero.',
-            });
         } catch (error) {
             console.error('Error resetting scores:', error);
             toast.error('Error', {
@@ -181,7 +173,7 @@ export default function Home() {
     }
 
     return (
-        <div className="min-h-screen bg-background p-4 flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 flex flex-col">
             <div className="max-w-7xl mx-auto flex-1 w-full">
                 <Header
                     session={session}
@@ -191,23 +183,22 @@ export default function Home() {
                 />
 
                 {lastUpdate && (
-                    <Alert className="mb-6 bg-blue-50 border-blue-200">
-                        <AlertDescription className="text-blue-800">
+                    <Alert className="mb-6 bg-blue-500/10 border-blue-200 backdrop-blur-sm">
+                        <AlertDescription className="text-blue-700 flex items-center gap-2">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
                             Last update: {lastUpdate}
                         </AlertDescription>
                     </Alert>
                 )}
 
-                <Scoreboard scores={scores} />
-
                 {session && isAdmin && (
                     <AdminControls
-                        showAdminControls={false}
-                        onToggleControls={() => { }}
                         onAddPoints={addPoints}
                         onResetScores={resetScores}
                     />
                 )}
+                
+                <Scoreboard scores={scores} />
             </div>
 
             <div className="max-w-7xl mx-auto w-full">
