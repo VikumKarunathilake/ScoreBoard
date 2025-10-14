@@ -32,7 +32,7 @@ export function ScoreChart({ scores }: ScoreChartProps) {
     const sortedData = [...chartData].sort((a, b) => b.score - a.score);
     const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) => {
         if (active && payload && payload.length) {
             return (
                 <div className="border bg-background p-3 rounded-lg shadow-lg">
@@ -46,7 +46,7 @@ export function ScoreChart({ scores }: ScoreChartProps) {
         return null;
     };
 
-    const CustomPieTooltip = ({ active, payload }: any) => {
+    const CustomPieTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: { house: string } }> }) => {
         if (active && payload && payload.length) {
             return (
                 <div className="border bg-background p-3 rounded-lg shadow-lg">

@@ -67,7 +67,6 @@ export default function Home() {
 
                     case 'score-update':
                         setScores(data.data.scores);
-                        const update = data.data.update;
                         const updateMessage = `Score Updated`;
                         setLastUpdate(updateMessage);
                         break;
