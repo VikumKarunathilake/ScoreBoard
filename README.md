@@ -2,6 +2,8 @@
 
 A **real-time scoreboard** for school sports meet events, built with **Next.js**, **Tailwind CSS**, and **TypeScript**, using **Server-Sent Events (SSE)** for live updates.
 
+![Alt Text](./public/image.png)
+
 ---
 
 ## ⚡ Features
