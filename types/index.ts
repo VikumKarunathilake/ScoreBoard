@@ -3,7 +3,6 @@ export interface Scores {
   blue: number;
   green: number;
   yellow: number;
-  purple: number;
 }
 
 export interface ScoreUpdate {

@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     const { house, points, event } = body;
 
     if (house && points !== undefined && event) {
-      const validHouses = ['red', 'blue', 'green', 'yellow', 'purple'];
+      const validHouses = ['red', 'blue', 'green', 'yellow',];
       if (!validHouses.includes(house)) {
         return new Response(JSON.stringify({ error: 'Invalid house' }), { status: 400 });
       }

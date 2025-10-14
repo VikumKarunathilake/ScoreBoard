@@ -1,3 +1,4 @@
+// components/Home/Home.tsx
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -7,6 +8,9 @@ import { Header } from '@/components/Home/Header';
 import { Scoreboard } from '@/components/Home/Scoreboard';
 import { AdminControls } from '@/components/Home/AdminControls';
 import { LoadingSpinner } from '@/components/Home/LoadingSpinner';
+import { Footer } from '@/components/Home/Footer';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { toast } from 'sonner';
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -15,17 +19,13 @@ export default function Home() {
         blue: 0,
         green: 0,
         yellow: 0,
-        purple: 0
     });
     const [lastUpdate, setLastUpdate] = useState<string>('');
     const [isAdmin, setIsAdmin] = useState(false);
-    const [showAdminControls, setShowAdminControls] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Use ref instead of state for eventSource to avoid re-renders
     const eventSourceRef = useRef<EventSource | null>(null);
 
-    // Check admin status
     useEffect(() => {
         if (session?.user?.email) {
             checkAdminStatus();
@@ -43,9 +43,7 @@ export default function Home() {
         }
     };
 
-    // Initialize SSE connection
     const initializeSSE = useCallback(() => {
-        // Close existing connection if any
         if (eventSourceRef.current) {
             eventSourceRef.current.close();
         }
@@ -70,12 +68,20 @@ export default function Home() {
                     case 'score-update':
                         setScores(data.data.scores);
                         const update = data.data.update;
-                        setLastUpdate(`${update.house} +${update.points} - ${update.event} (by ${update.updatedBy})`);
+                        const updateMessage = `${update.house} +${update.points} - ${update.event} (by ${update.updatedBy})`;
+                        setLastUpdate(updateMessage);
+                        toast.success('Score Updated', {
+                            description: updateMessage,
+                        });
                         break;
 
                     case 'score-reset':
                         setScores(data.data.scores);
-                        setLastUpdate(`Scores reset by ${data.data.updatedBy}`);
+                        const resetMessage = `Scores reset by ${data.data.updatedBy}`;
+                        setLastUpdate(resetMessage);
+                        toast.info('Scores Reset', {
+                            description: resetMessage,
+                        });
                         break;
                 }
             } catch (error) {
@@ -87,16 +93,14 @@ export default function Home() {
             console.error('SSE error:', error);
             es.close();
 
-            // Attempt to reconnect after 3 seconds
             setTimeout(() => {
                 initializeSSE();
             }, 3000);
         };
 
         return es;
-    }, []); // Empty dependency array since we use ref
+    }, []);
 
-    // Set up SSE connection
     useEffect(() => {
         const es = initializeSSE();
 
@@ -118,8 +122,9 @@ export default function Home() {
             });
 
             if (response.status === 401) {
-                alert('Unauthorized: Please sign in as admin');
-                setShowAdminControls(false);
+                toast.error('Unauthorized', {
+                    description: 'Please sign in as admin to add points.',
+                });
                 setIsAdmin(false);
                 return;
             }
@@ -127,10 +132,15 @@ export default function Home() {
             if (!response.ok) {
                 throw new Error('Failed to add points');
             }
+
+            toast.success('Points Added', {
+                description: `Added ${points} points to ${house} for ${event}`,
+            });
         } catch (error) {
             console.error('Error adding points:', error);
-            alert('Error adding points. Please check your admin permissions.');
-            setShowAdminControls(false);
+            toast.error('Error', {
+                description: 'Failed to add points. Please check your admin permissions.',
+            });
         }
     };
 
@@ -144,8 +154,9 @@ export default function Home() {
             });
 
             if (response.status === 401) {
-                alert('Unauthorized: Please sign in as admin');
-                setShowAdminControls(false);
+                toast.error('Unauthorized', {
+                    description: 'Please sign in as admin to reset scores.',
+                });
                 setIsAdmin(false);
                 return;
             }
@@ -153,10 +164,15 @@ export default function Home() {
             if (!response.ok) {
                 throw new Error('Failed to reset scores');
             }
+
+            toast.success('Scores Reset', {
+                description: 'All scores have been reset to zero.',
+            });
         } catch (error) {
             console.error('Error resetting scores:', error);
-            alert('Error resetting scores. Please check your admin permissions.');
-            setShowAdminControls(false);
+            toast.error('Error', {
+                description: 'Failed to reset scores. Please check your admin permissions.',
+            });
         }
     };
 
@@ -165,8 +181,8 @@ export default function Home() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-4">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-background p-4 flex flex-col">
+            <div className="max-w-7xl mx-auto flex-1 w-full">
                 <Header
                     session={session}
                     isAdmin={isAdmin}
@@ -175,21 +191,27 @@ export default function Home() {
                 />
 
                 {lastUpdate && (
-                    <div className="mb-6 p-3 bg-blue-100 text-blue-800 rounded text-center">
-                        Last update: {lastUpdate}
-                    </div>
+                    <Alert className="mb-6 bg-blue-50 border-blue-200">
+                        <AlertDescription className="text-blue-800">
+                            Last update: {lastUpdate}
+                        </AlertDescription>
+                    </Alert>
                 )}
 
                 <Scoreboard scores={scores} />
 
                 {session && isAdmin && (
                     <AdminControls
-                        showAdminControls={showAdminControls}
-                        onToggleControls={() => setShowAdminControls(!showAdminControls)}
+                        showAdminControls={false}
+                        onToggleControls={() => { }}
                         onAddPoints={addPoints}
                         onResetScores={resetScores}
                     />
                 )}
+            </div>
+
+            <div className="max-w-7xl mx-auto w-full">
+                <Footer />
             </div>
         </div>
     );

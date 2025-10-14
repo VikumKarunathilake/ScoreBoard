@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
 import { SessionProvider } from "@/components/SessionProvider"
+import { Toaster } from 'sonner';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,6 +19,12 @@ export default function RootLayout({
       <body>
         <SessionProvider>
           {children}
+          <Toaster
+            position="top-right"
+            expand={false}
+            richColors
+            closeButton
+          />
         </SessionProvider>
       </body>
     </html>

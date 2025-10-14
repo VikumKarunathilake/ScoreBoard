@@ -10,7 +10,6 @@ const initialScores = {
   blue: 0,
   green: 0,
   yellow: 0,
-  purple: 0
 };
 
 // Ensure data directory exists
